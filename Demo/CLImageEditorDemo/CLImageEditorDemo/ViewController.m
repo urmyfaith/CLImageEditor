@@ -33,11 +33,6 @@
     [self refreshImageView];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
 
 - (BOOL)shouldAutorotate
 {
@@ -53,61 +48,6 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
-- (void)pushedNewBtn
-{
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Photo Library", nil];
-    [sheet showInView:self.view.window];
-}
-
-- (void)pushedEditBtn
-{
-    if(_imageView.image){
-        CLImageEditor *editor = [[CLImageEditor alloc] initWithImage:_imageView.image delegate:self];
-        //CLImageEditor *editor = [[CLImageEditor alloc] initWithDelegate:self];
-        
-        /*
-        NSLog(@"%@", editor.toolInfo);
-        NSLog(@"%@", editor.toolInfo.toolTreeDescription);
-        
-        CLImageToolInfo *tool = [editor.toolInfo subToolInfoWithToolName:@"CLToneCurveTool" recursive:NO];
-        tool.available = NO;
-        
-        tool = [editor.toolInfo subToolInfoWithToolName:@"CLRotateTool" recursive:YES];
-        tool.available = NO;
-        
-        tool = [editor.toolInfo subToolInfoWithToolName:@"CLHueEffect" recursive:YES];
-        tool.available = NO;
-        */
-        
-        [self presentViewController:editor animated:YES completion:nil];
-        //[editor showInViewController:self withImageView:_imageView];
-    }
-    else{
-        [self pushedNewBtn];
-    }
-}
-
-- (void)pushedSaveBtn
-{
-    if(_imageView.image){
-        NSArray *excludedActivityTypes = @[UIActivityTypeAssignToContact, UIActivityTypeCopyToPasteboard, UIActivityTypeMessage];
-        
-        UIActivityViewController *activityView = [[UIActivityViewController alloc] initWithActivityItems:@[_imageView.image] applicationActivities:nil];
-        
-        activityView.excludedActivityTypes = excludedActivityTypes;
-        activityView.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
-            if(completed && [activityType isEqualToString:UIActivityTypeSaveToCameraRoll]){
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved successfully" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
-            }
-        };
-        
-        [self presentViewController:activityView animated:YES completion:nil];
-    }
-    else{
-        [self pushedNewBtn];
-    }
-}
 
 #pragma mark- ImagePicker delegate
 
@@ -120,19 +60,8 @@
     
     [picker pushViewController:editor animated:YES];
 }
-/*
-- (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
-{
-    if([navigationController isKindOfClass:[UIImagePickerController class]] && [viewController isKindOfClass:[CLImageEditor class]]){
-        viewController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelButtonDidPush:)];
-    }
-}
 
-- (void)cancelButtonDidPush:(id)sender
-{
-    [self.presentedViewController dismissViewControllerAnimated:YES completion:nil];
-}
-*/
+
 #pragma mark- CLImageEditor delegate
 
 - (void)imageEditor:(CLImageEditor *)editor didFinishEdittingWithImage:(UIImage *)image
@@ -155,6 +84,13 @@
     tabBar.selectedItem = nil;
 }
 
+
+/**
+ 使用代理,通过 tag 区分点击事件
+
+ @param tabBar
+ @param item
+ */
 - (void)tabBar:(UITabBar *)tabBar didSelectItem:(UITabBarItem *)item
 {
     [self performSelector:@selector(deselectTabBarItem:) withObject:tabBar afterDelay:0.2];
@@ -174,11 +110,69 @@
     }
 }
 
-#pragma mark- Actionsheet delegate
+#pragma mark - Action Events 页面跳转
+
+- (void)pushedNewBtn
+{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Camera", @"Photo Library", nil];
+    [sheet showInView:self.view.window];
+}
+
+- (void)pushedEditBtn
+{
+    if(_imageView.image){
+        CLImageEditor *editor = [[CLImageEditor alloc] initWithImage:_imageView.image delegate:self];
+        //CLImageEditor *editor = [[CLImageEditor alloc] initWithDelegate:self];
+
+        /*
+         NSLog(@"%@", editor.toolInfo);
+         NSLog(@"%@", editor.toolInfo.toolTreeDescription);
+
+         CLImageToolInfo *tool = [editor.toolInfo subToolInfoWithToolName:@"CLToneCurveTool" recursive:NO];
+         tool.available = NO;
+
+         tool = [editor.toolInfo subToolInfoWithToolName:@"CLRotateTool" recursive:YES];
+         tool.available = NO;
+
+         tool = [editor.toolInfo subToolInfoWithToolName:@"CLHueEffect" recursive:YES];
+         tool.available = NO;
+         */
+
+        [self presentViewController:editor animated:YES completion:nil];
+        //[editor showInViewController:self withImageView:_imageView];
+    }
+    else{
+        [self pushedNewBtn];
+    }
+}
+
+- (void)pushedSaveBtn
+{
+    if(_imageView.image){
+        NSArray *excludedActivityTypes = @[UIActivityTypeAssignToContact, UIActivityTypeCopyToPasteboard, UIActivityTypeMessage];
+
+        UIActivityViewController *activityView = [[UIActivityViewController alloc] initWithActivityItems:@[_imageView.image] applicationActivities:nil];
+
+        activityView.excludedActivityTypes = excludedActivityTypes;
+        activityView.completionWithItemsHandler = ^(NSString *activityType, BOOL completed, NSArray *returnedItems, NSError *activityError) {
+            if(completed && [activityType isEqualToString:UIActivityTypeSaveToCameraRoll]){
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Saved successfully" message:nil delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
+        };
+
+        [self presentViewController:activityView animated:YES completion:nil];
+    }
+    else{
+        [self pushedNewBtn];
+    }
+}
+
+#pragma mark- Actionsheet delegate 选图|拍照
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-    if(buttonIndex==actionSheet.cancelButtonIndex){
+    if(buttonIndex == actionSheet.cancelButtonIndex){
         return;
     }
     
