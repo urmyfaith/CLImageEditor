@@ -170,7 +170,7 @@ static NSString* const kCLToneCurveToolResetIconName = @"resetIconAssetsName";
     CIImage *ciImage = [[CIImage alloc] initWithImage:image];
     CIFilter *filter = [CIFilter filterWithName:@"CIToneCurve" keysAndValues:kCIInputImageKey, ciImage, nil];
     
-    //NSLog(@"%@", [filter attributes]);
+    NSLog(@"%@", [filter attributes]);
     
     [filter setDefaults];
     [filter setValue:_tonecurveView.point0 forKey:@"inputPoint0"];

@@ -7,7 +7,7 @@
 
 #import "UIImage+Utility.h"
 
-#import <Accelerate/Accelerate.h>
+#import <Accelerate/Accelerate.h>//用于高斯模糊 gaussBlur
 
 @implementation UIImage (Utility)
 
