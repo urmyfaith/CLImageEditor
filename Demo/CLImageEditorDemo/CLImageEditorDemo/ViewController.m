@@ -139,7 +139,7 @@
          */
 
         [self presentViewController:editor animated:YES completion:nil];
-        //[editor showInViewController:self withImageView:_imageView];
+       // [editor showInViewController:self withImageView:_imageView];
     }
     else{
         [self pushedNewBtn];
