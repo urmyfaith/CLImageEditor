@@ -6,9 +6,23 @@
 //  CLImageEditor Author sho yakushiji.
 //
 
+
 #import "CLEmoticonTool.h"
 
 #import "CLCircleView.h"
+
+@interface CLScrollView : UIScrollView
+@end
+
+@implementation CLScrollView
+@end
+
+@interface CLworkingView : UIView
+@end
+
+@implementation CLworkingView
+@end
+
 
 static NSString* const kCLEmoticonToolEmoticonPathKey = @"EmoticonPath";
 static NSString* const kCLEmoticonToolDeleteIconName = @"deleteIconAssetsName";
@@ -226,9 +240,9 @@ static NSString* const kCLEmoticonToolDeleteIconName = @"deleteIconAssetsName";
 {
     UIImage *_originalImage;
     
-    UIView *_workingView;
+    CLworkingView *_workingView;
     
-    UIScrollView *_menuScroll;
+    CLScrollView *_menuScroll;
 }
 
 + (NSArray*)subtools
@@ -274,12 +288,12 @@ static NSString* const kCLEmoticonToolDeleteIconName = @"deleteIconAssetsName";
     
     [self.editor fixZoomScaleWithAnimated:YES];
     
-    _menuScroll = [[UIScrollView alloc] initWithFrame:self.editor.menuView.frame];
+    _menuScroll = [[CLScrollView alloc] initWithFrame:self.editor.menuView.frame];
     _menuScroll.backgroundColor = self.editor.menuView.backgroundColor;
     _menuScroll.showsHorizontalScrollIndicator = NO;
     [self.editor.view addSubview:_menuScroll];
     
-    _workingView = [[UIView alloc] initWithFrame:[self.editor.view convertRect:self.editor.imageView.frame fromView:self.editor.imageView.superview]];
+    _workingView = [[CLworkingView alloc] initWithFrame:[self.editor.view convertRect:self.editor.imageView.frame fromView:self.editor.imageView.superview]];
     _workingView.clipsToBounds = YES;
     [self.editor.view addSubview:_workingView];
     
